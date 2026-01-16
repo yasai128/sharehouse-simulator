@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>シェアハウス vs 賃貸 費用比較シミュレーター | 2026年最新版</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #ff9a56 0%, #ff6b9d 100%);
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+        
+        .notice {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 20px;
+            color: #e74c3c;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .controls {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+        }
+        
+        .control-section {
+            margin-bottom: 30px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .control-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .section-title {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #ff6b9d;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-title span {
+            margin-right: 10px;
+        }
+        
+        .control-group {
+            margin-bottom: 25px;
+        }
+        
+        .control-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #333;
+            font-size: 1em;
+        }
+        
+        .slider-container {
+            position: relative;
+        }
+        
+        input[type="range"] {
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;
+            background: #ddd;
+            outline: none;
+            -webkit-appearance: none;
+        }
+        
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: #ff6b9d;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        input[type="range"]::-moz-range-thumb {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: #ff6b9d;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            border: none;
+        }
+        
+        .current-value {
+            display: inline-block;
+            background: #ff6b9d;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-top: 10px;
+        }
+        
+        .results {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .result-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .result-card.winner {
+            border: 3px solid #2ecc71;
+            background: linear-gradient(135deg, #f0fff4 0%, #e6ffed 100%);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #eee;
+        }
+        
+        .card-title {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .winner-badge {
+            background: #2ecc71;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .total-costs {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .cost-item {
+            text-align: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .cost-label {
+            font-size: 0.85em;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        
+        .cost-value {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #ff6b9d;
+        }
+        
+        .result-card.winner .cost-value {
+            color: #2ecc71;
+        }
+        
+        .breakdown-section {
+            margin-top: 20px;
+        }
+        
+        .breakdown-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .breakdown-items {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+        }
+        
+        .breakdown-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .breakdown-item:last-child {
+            border-bottom: none;
+        }
+        
+        .breakdown-label {
+            color: #666;
+        }
+        
+        .breakdown-value {
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .chart-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        .chart-canvas {
+            max-width: 300px;
+            margin: 0 auto;
+        }
+        
+        .savings-banner {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .savings-title {
+            font-size: 1.2em;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .savings-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #d63031;
+        }
+        
+        .savings-value.positive {
+            color: #2ecc71;
+        }
+        
+        .footer {
+            text-align: center;
+            color: white;
+            margin-top: 40px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .results {
+                grid-template-columns: 1fr;
+            }
+            
+            .total-costs {
+                grid-template-columns: 1fr;
+            }
+            
+            .controls {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏠 シェアハウス vs 賃貸 費用比較</h1>
+            <p>あなたに合った住まいのスタイルを見つけよう！</p>
+        </div>
+        
+        <div class="notice">
+            ※2026年1月時点の平均的な相場を基にしています。実際の費用は地域や物件により異なります。
+        </div>
+        
+        <div class="controls">
+            <!-- 共通設定 -->
+            <div class="control-section">
+                <div class="section-title">
+                    <span>🔧</span> 共通設定
+                </div>
+                
+                <div class="control-group">
+                    <label for="movingCost">引っ越し費用</label>
+                    <div class="slider-container">
+                        <input type="range" id="movingCost" min="0" max="100000" step="5000" value="30000">
+                        <div class="current-value">
+                            <span id="movingCostValue">30,000</span>円
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- シェアハウス設定 -->
+            <div class="control-section">
+                <div class="section-title">
+                    <span>🏘️</span> シェアハウス
+                </div>
+                
+                <div class="control-group">
+                    <label for="shareRent">月額家賃</label>
+                    <div class="slider-container">
+                        <input type="range" id="shareRent" min="30000" max="100000" step="5000" value="50000">
+                        <div class="current-value">
+                            <span id="shareRentValue">50,000</span>円/月
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="control-group">
+                    <label for="shareUtility">共益費（光熱費・WiFi込み）</label>
+                    <div class="slider-container">
+                        <input type="range" id="shareUtility" min="0" max="20000" step="1000" value="10000">
+                        <div class="current-value">
+                            <span id="shareUtilityValue">10,000</span>円/月
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="control-group">
+                    <label for="shareDeposit">デポジット（初期費用）</label>
+                    <div class="slider-container">
+                        <input type="range" id="shareDeposit" min="0" max="100000" step="5000" value="30000">
+                        <div class="current-value">
+                            <span id="shareDepositValue">30,000</span>円
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 賃貸設定 -->
+            <div class="control-section">
+                <div class="section-title">
+                    <span>🏢</span> 賃貸マンション
+                </div>
+                
+                <div class="control-group">
+                    <label for="apartmentRent">月額家賃</label>
+                    <div class="slider-container">
+                        <input type="range" id="apartmentRent" min="40000" max="150000" step="5000" value="70000">
+                        <div class="current-value">
+                            <span id="apartmentRentValue">70,000</span>円/月
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="control-group">
+                    <label for="utilities">光熱費</label>
+                    <div class="slider-container">
+                        <input type="range" id="utilities" min="0" max="30000" step="1000" value="13000">
+                        <div class="current-value">
+                            <span id="utilitiesValue">13,000</span>円/月
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="control-group">
+                    <label for="wifi">WiFi・インターネット</label>
+                    <div class="slider-container">
+                        <input type="range" id="wifi" min="0" max="8000" step="500" value="4000">
+                        <div class="current-value">
+                            <span id="wifiValue">4,000</span>円/月
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="control-group">
+                    <label for="shikikin">敷金（家賃の◯ヶ月分）</label>
+                    <div class="slider-container">
+                        <input type="range" id="shikikin" min="0" max="2" step="0.5" value="1">
+                        <div class="current-value">
+                            <span id="shikikinValue">1.0</span>ヶ月分
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="control-group">
+                    <label for="reikin">礼金（家賃の◯ヶ月分）</label>
+                    <div class="slider-container">
+                        <input type="range" id="reikin" min="0" max="2" step="0.5" value="1">
+                        <div class="current-value">
+                            <span id="reikinValue">1.0</span>ヶ月分
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="control-group">
+                    <label for="chukai">仲介手数料（家賃の◯ヶ月分）</label>
+                    <div class="slider-container">
+                        <input type="range" id="chukai" min="0" max="1" step="0.5" value="1">
+                        <div class="current-value">
+                            <span id="chukaiValue">1.0</span>ヶ月分
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="control-group">
+                    <label for="insurance">火災保険</label>
+                    <div class="slider-container">
+                        <input type="range" id="insurance" min="0" max="50000" step="5000" value="20000">
+                        <div class="current-value">
+                            <span id="insuranceValue">20,000</span>円
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="control-group">
+                    <label for="keyMoney">鍵交換費用</label>
+                    <div class="slider-container">
+                        <input type="range" id="keyMoney" min="0" max="30000" step="5000" value="15000">
+                        <div class="current-value">
+                            <span id="keyMoneyValue">15,000</span>円
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="control-group">
+                    <label for="furniture">家具家電購入費用</label>
+                    <div class="slider-container">
+                        <input type="range" id="furniture" min="0" max="300000" step="10000" value="120000">
+                        <div class="current-value">
+                            <span id="furnitureValue">120,000</span>円
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="savings-banner" id="savingsBanner"></div>
+        
+        <div class="results">
+            <!-- シェアハウスカード -->
+            <div class="result-card" id="shareCard">
+                <div class="card-header">
+                    <div class="card-title">🏘️ シェアハウス</div>
+                    <div class="winner-badge" id="shareWinner" style="display: none;">✨ おトク！</div>
+                </div>
+                
+                <div class="total-costs">
+                    <div class="cost-item">
+                        <div class="cost-label">初期費用</div>
+                        <div class="cost-value" id="shareInitial">¥0</div>
+                    </div>
+                    <div class="cost-item">
+                        <div class="cost-label">月額費用</div>
+                        <div class="cost-value" id="shareMonthly">¥0</div>
+                    </div>
+                    <div class="cost-item">
+                        <div class="cost-label">年間総額</div>
+                        <div class="cost-value" id="shareYearly">¥0</div>
+                    </div>
+                </div>
+                
+                <div class="breakdown-section">
+                    <div class="breakdown-title">💰 初期費用の内訳</div>
+                    <div class="breakdown-items" id="shareInitialBreakdown"></div>
+                </div>
+                
+                <div class="breakdown-section">
+                    <div class="breakdown-title">📅 月額費用の内訳</div>
+                    <div class="breakdown-items" id="shareMonthlyBreakdown"></div>
+                </div>
+            </div>
+            
+            <!-- 賃貸カード -->
+            <div class="result-card" id="apartmentCard">
+                <div class="card-header">
+                    <div class="card-title">🏢 賃貸マンション</div>
+                    <div class="winner-badge" id="apartmentWinner" style="display: none;">✨ おトク！</div>
+                </div>
+                
+                <div class="total-costs">
+                    <div class="cost-item">
+                        <div class="cost-label">初期費用</div>
+                        <div class="cost-value" id="apartmentInitial">¥0</div>
+                    </div>
+                    <div class="cost-item">
+                        <div class="cost-label">月額費用</div>
+                        <div class="cost-value" id="apartmentMonthly">¥0</div>
+                    </div>
+                    <div class="cost-item">
+                        <div class="cost-label">年間総額</div>
+                        <div class="cost-value" id="apartmentYearly">¥0</div>
+                    </div>
+                </div>
+                
+                <div class="breakdown-section">
+                    <div class="breakdown-title">💰 初期費用の内訳</div>
+                    <div class="breakdown-items" id="apartmentInitialBreakdown"></div>
+                </div>
+                
+                <div class="breakdown-section">
+                    <div class="breakdown-title">📅 月額費用の内訳</div>
+                    <div class="breakdown-items" id="apartmentMonthlyBreakdown"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p><strong>💡 使い方</strong></p>
+            <p>スライダーを動かしてあなたの条件に合わせてください</p>
+            <p>緑色のハイライトがおトクなプランです！</p>
+            <p style="margin-top: 15px; font-size: 0.9em;">
+                ※料金は目安です。実際の費用は物件や地域により異なります。<br>
+                ※賃貸の更新料（2年で家賃1ヶ月分+手数料2万円）も計算に含まれています。
+            </p>
+        </div>
+    </div>
+    
+    <script>
+        function formatNumber(num) {
+            return Math.round(num).toLocaleString('ja-JP');
+        }
+        
+        function updateSliderValue(sliderId, valueId, suffix = '円') {
+            const slider = document.getElementById(sliderId);
+            const valueSpan = document.getElementById(valueId);
+            
+            slider.addEventListener('input', function() {
+                let value = parseFloat(this.value);
+                if (suffix === 'ヶ月分') {
+                    valueSpan.textContent = value.toFixed(1);
+                } else {
+                    valueSpan.textContent = formatNumber(value);
+                }
+                calculate();
+            });
+        }
+        
+        function createBreakdownHTML(items) {
+            return items.map(item => `
+                <div class="breakdown-item">
+                    <span class="breakdown-label">${item.label}</span>
+                    <span class="breakdown-value">¥${formatNumber(item.value)}</span>
+                </div>
+            `).join('');
+        }
+        
+        function calculate() {
+            // 共通
+            const movingCost = parseInt(document.getElementById('movingCost').value);
+            
+            // シェアハウス
+            const shareRent = parseInt(document.getElementById('shareRent').value);
+            const shareUtility = parseInt(document.getElementById('shareUtility').value);
+            const shareDeposit = parseInt(document.getElementById('shareDeposit').value);
+            
+            const shareInitial = shareDeposit + movingCost;
+            const shareMonthly = shareRent + shareUtility;
+            const shareYearly = shareInitial + (shareMonthly * 12);
+            
+            // 賃貸
+            const apartmentRent = parseInt(document.getElementById('apartmentRent').value);
+            const utilities = parseInt(document.getElementById('utilities').value);
+            const wifi = parseInt(document.getElementById('wifi').value);
+            const shikikin = parseFloat(document.getElementById('shikikin').value) * apartmentRent;
+            const reikin = parseFloat(document.getElementById('reikin').value) * apartmentRent;
+            const chukai = parseFloat(document.getElementById('chukai').value) * apartmentRent;
+            const insurance = parseInt(document.getElementById('insurance').value);
+            const keyMoney = parseInt(document.getElementById('keyMoney').value);
+            const furniture = parseInt(document.getElementById('furniture').value);
+            
+            const apartmentInitial = shikikin + reikin + chukai + apartmentRent + insurance + keyMoney + furniture + movingCost;
+            const apartmentMonthly = apartmentRent + utilities + wifi;
+            const renewalFee = apartmentRent + 20000; // 更新料（2年で1回）
+            const apartmentYearly = apartmentInitial + (apartmentMonthly * 12) + (renewalFee / 2);
+            
+            // 表示更新
+            document.getElementById('shareInitial').textContent = '¥' + formatNumber(shareInitial);
+            document.getElementById('shareMonthly').textContent = '¥' + formatNumber(shareMonthly);
+            document.getElementById('shareYearly').textContent = '¥' + formatNumber(shareYearly);
+            
+            document.getElementById('apartmentInitial').textContent = '¥' + formatNumber(apartmentInitial);
+            document.getElementById('apartmentMonthly').textContent = '¥' + formatNumber(apartmentMonthly);
+            document.getElementById('apartmentYearly').textContent = '¥' + formatNumber(apartmentYearly);
+            
+            // 内訳表示
+            document.getElementById('shareInitialBreakdown').innerHTML = createBreakdownHTML([
+                { label: 'デポジット', value: shareDeposit },
+                { label: '引っ越し費用', value: movingCost }
+            ]);
+            
+            document.getElementById('shareMonthlyBreakdown').innerHTML = createBreakdownHTML([
+                { label: '家賃', value: shareRent },
+                { label: '共益費（光熱費・WiFi込み）', value: shareUtility }
+            ]);
+            
+            const apartmentInitialItems = [
+                { label: '敷金', value: shikikin },
+                { label: '礼金', value: reikin },
+                { label: '仲介手数料', value: chukai },
+                { label: '前家賃', value: apartmentRent },
+                { label: '火災保険', value: insurance },
+                { label: '鍵交換', value: keyMoney },
+                { label: '家具家電', value: furniture },
+                { label: '引っ越し費用', value: movingCost }
+            ];
+            
+            document.getElementById('apartmentInitialBreakdown').innerHTML = createBreakdownHTML(apartmentInitialItems);
+            
+            document.getElementById('apartmentMonthlyBreakdown').innerHTML = createBreakdownHTML([
+                { label: '家賃', value: apartmentRent },
+                { label: '光熱費', value: utilities },
+                { label: 'WiFi', value: wifi },
+                { label: '更新料（2年分の月割）', value: renewalFee / 24 }
+            ]);
+            
+            // 勝者判定
+            const shareCard = document.getElementById('shareCard');
+            const apartmentCard = document.getElementById('apartmentCard');
+            const shareWinner = document.getElementById('shareWinner');
+            const apartmentWinner = document.getElementById('apartmentWinner');
+            
+            if (shareYearly < apartmentYearly) {
+                shareCard.classList.add('winner');
+                apartmentCard.classList.remove('winner');
+                shareWinner.style.display = 'block';
+                apartmentWinner.style.display = 'none';
+            } else {
+                apartmentCard.classList.add('winner');
+                shareCard.classList.remove('winner');
+                apartmentWinner.style.display = 'block';
+                shareWinner.style.display = 'none';
+            }
+            
+            // 節約額バナー
+            const savings = Math.abs(apartmentYearly - shareYearly);
+            const savingsBanner = document.getElementById('savingsBanner');
+            
+            if (shareYearly < apartmentYearly) {
+                savingsBanner.innerHTML = `
+                    <div class="savings-title">💰 シェアハウスで年間節約できる金額</div>
+                    <div class="savings-value positive">¥${formatNumber(savings)}</div>
+                    <div style="margin-top: 10px; color: #666;">
+                        2年間で約 ¥${formatNumber(savings * 2)} の節約！
+                    </div>
+                `;
+            } else {
+                savingsBanner.innerHTML = `
+                    <div class="savings-title">💰 賃貸マンションで年間節約できる金額</div>
+                    <div class="savings-value positive">¥${formatNumber(savings)}</div>
+                    <div style="margin-top: 10px; color: #666;">
+                        2年間で約 ¥${formatNumber(savings * 2)} の節約！
+                    </div>
+                `;
+            }
+        }
+        
+        // イベントリスナー設定
+        updateSliderValue('movingCost', 'movingCostValue');
+        updateSliderValue('shareRent', 'shareRentValue');
+        updateSliderValue('shareUtility', 'shareUtilityValue');
+        updateSliderValue('shareDeposit', 'shareDepositValue');
+        updateSliderValue('apartmentRent', 'apartmentRentValue');
+        updateSliderValue('utilities', 'utilitiesValue');
+        updateSliderValue('wifi', 'wifiValue');
+        updateSliderValue('shikikin', 'shikikinValue', 'ヶ月分');
+        updateSliderValue('reikin', 'reikinValue', 'ヶ月分');
+        updateSliderValue('chukai', 'chukaiValue', 'ヶ月分');
+        updateSliderValue('insurance', 'insuranceValue');
+        updateSliderValue('keyMoney', 'keyMoneyValue');
+        updateSliderValue('furniture', 'furnitureValue');
+        
+        // 初期計算
+        calculate();
+    </script>
+</body>
+</html>
